@@ -2,10 +2,6 @@
 import { createRouter, createWebHistory } from 'vue-router';
 
 const routes = [
-	// {
-	// 	path: '/',
-	// 	redirect: '/home',
-	// },
 	{
 		path: '/',
 		name: 'home',
@@ -18,6 +14,8 @@ const routes = [
 		// component: AboutView,
 		component: () => import('@/views/AboutView.vue'),
 	},
+	// --------------------------------------------------------------
+	// post
 	{
 		path: '/posts',
 		name: 'PostList',
@@ -39,6 +37,38 @@ const routes = [
 		path: '/posts/:id/edit',
 		name: 'PostEdit',
 		component: () => import('@/views/posts/PostEditView.vue'),
+	},
+	// --------------------------------------------------------------
+	// 중첩 라우터 사용, children
+	{
+		path: '/nested',
+		name: 'Nested',
+		component: () => import('@/views/nested/NesdtedView.vue'),
+		children: [
+			{
+				path: '',
+				name: 'NestedDefault',
+				component: () => import('@/views/nested/NestedOneView.vue'),
+			},
+			{
+				// children의 path에는 / 생략
+				path: 'one',
+				name: 'NestedOne',
+				component: () => import('@/views/nested/NestedOneView.vue'),
+			},
+			{
+				path: 'two',
+				name: 'NestedTwo',
+				component: () => import('@/views/nested/NestedTwoView.vue'),
+			},
+		],
+	},
+	// --------------------------------------------------------------
+	// 유효한 path 값이 없을 경우 NotFound 페이지로 이동
+	{
+		path: '/:pathMatch(.*)*',
+		name: 'NotFound',
+		component: () => import('@/views/NotFoundView.vue'),
 	},
 ];
 const router = createRouter({

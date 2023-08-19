@@ -1,8 +1,6 @@
 <template>
 	<div>
 		<h2>about view</h2>
-		<p>{{ $route.path }}</p>
-		<p>{{ $route.name }}</p>
 		<button class="btn btn-primary" @click="goAboutPage">GO ABOUT</button>
 	</div>
 </template>

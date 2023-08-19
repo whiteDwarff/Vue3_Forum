@@ -36,6 +36,11 @@
 								>Posts</router-link
 							>
 						</li>
+						<li class="nav-item">
+							<router-link to="/nested" class="nav-link" active-class="active"
+								>Nested</router-link
+							>
+						</li>
 					</ul>
 					<div class="d-flex" role="search">
 						<button @click="goPage" class="btn btn-outline-light" type="button">
