@@ -33,3 +33,7 @@ const posts = [
 export function getPosts() {
 	return posts;
 }
+// find : 배열의 특정값을 찾아 반환, 없는 경우 undefind
+export function getPostById(id) {
+	return posts.find(item => item.id === id);
+}

@@ -10,6 +10,7 @@
 				<router-link
 					:to="{ name: 'NestedOne', replace: true }"
 					class="nav-link"
+					:class="{ active: $route.fullPath != '/nested/two' }"
 					active-class="active"
 				>
 					Nested One
