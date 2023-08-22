@@ -2,7 +2,7 @@
 	<div>
 		<h2>게시글 수정</h2>
 		<hr class="my-4" />
-		<form @submit.prevent>
+		<form @submit.prevent="update">
 			<div class="mb-3">
 				<label for="title" class="form-label">Title</label>
 				<input type="text" class="form-control" id="title" />
@@ -27,6 +27,26 @@
 
 <script setup>
 import { useRoute, useRouter } from 'vue-router';
+import { updatePost } from '@/api/posts.js';
+import { ref } from 'vue';
+
+const form = ref({
+	title: null,
+	contents: null,
+	createdAt: null,
+});
+
+const update = async () => {
+	try {
+		const data = ref({
+			title: null,
+			contents: null,
+		});
+		await updatePost(route.params.id, data);
+	} catch (err) {
+		console.log(err);
+	}
+};
 
 const route = useRoute();
 const router = useRouter();

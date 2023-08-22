@@ -75,7 +75,10 @@ const routes = [
 	},
 ];
 const router = createRouter({
+	// #이 붙지 않음, 웹 배포 시 사용
 	history: createWebHistory('/'),
+	// SEO 노출에 최적화 되지 않음.
+	// history: createWebHashHistory(''),
 	routes,
 });
 

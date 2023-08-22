@@ -26,10 +26,18 @@ import AppCard from '@/components/AppCard.vue';
 import { getPosts } from '@/api/posts.js';
 import { ref } from 'vue';
 import { useRouter } from 'vue-router';
+
 // ----------------------------------------------------
 const posts = ref([]);
-const fetchPosts = () => {
-	posts.value = getPosts();
+const fetchPosts = async () => {
+	// ({ data: posts.value } = await getPosts());
+	const { data } = await getPosts();
+	try {
+		console.dir(data);
+		posts.value = data;
+	} catch (err) {
+		console.log(err);
+	}
 };
 fetchPosts();
 // ----------------------------------------------------
