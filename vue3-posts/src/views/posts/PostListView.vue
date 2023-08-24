@@ -2,44 +2,77 @@
 	<div>
 		<h2>게시글 목록</h2>
 		<hr class="my-4" />
-		<div class="row g-3">
-			<div class="col-4" v-for="post in posts" :key="post.id">
-				<PostItem
-					:title="post.title"
-					:contents="post.contents"
-					:createdAt="post.createdAt"
-					@click="goDetail(post.id)"
-				/>
-			</div>
-		</div>
+
+		<PostFilter
+			@submit.prevent=""
+			v-model:title="params.title_like"
+			v-model:limit="params._limit"
+		/>
 		<hr class="my-4" />
-		<AppCard>
+
+		<AppGrid :items="posts">
+			<template v-slot="{ item }">
+				<PostItem
+					:title="item.title"
+					:contents="item.contents"
+					:createdAt="item.createdAt"
+					@click="goDetail(item.id)"
+				/>
+			</template>
+		</AppGrid>
+
+		<AppPagenation
+			:currentPage="params._page"
+			:pageCount="pageCount"
+			@page="page => (params._page = page)"
+		/>
+		<hr class="my-5" />
+		<!-- <AppCard>
 			<PostDetailView :id="3" />
-		</AppCard>
+		</AppCard> -->
 	</div>
 </template>
 
 <script setup>
 import PostItem from '@/components/posts/PostItem.vue';
-import PostDetailView from './PostDetailView.vue';
-import AppCard from '@/components/AppCard.vue';
+import AppPagenation from '@/components/AppPagenation.vue';
+import AppGrid from '@/components/AppGrid.vue';
+import PostFilter from '@/components/posts/PostFilter.vue';
+//import PostDetailView from './PostDetailView.vue';
+//import AppCard from '@/components/AppCard.vue';
 import { getPosts } from '@/api/posts.js';
-import { ref } from 'vue';
+import { computed, ref, watchEffect } from 'vue';
 import { useRouter } from 'vue-router';
 
 // ----------------------------------------------------
 const posts = ref([]);
+const params = ref({
+	_sort: 'createdAt',
+	_order: 'desc',
+	_page: 1,
+	_limit: 3,
+	title_like: '',
+});
+// paginataion
+const totalCount = ref(0);
+const pageCount = computed(() =>
+	// Math.ceil() : 반올림
+	Math.ceil(totalCount.value / params.value._limit),
+);
 const fetchPosts = async () => {
 	// ({ data: posts.value } = await getPosts());
-	const { data } = await getPosts();
+	const { data, headers } = await getPosts(params.value);
+	console.dir(data);
 	try {
-		console.dir(data);
 		posts.value = data;
+		totalCount.value = headers['x-total-count'];
 	} catch (err) {
 		console.log(err);
 	}
 };
-fetchPosts();
+// watchEffect : 반응형의 상태가 변경되었을 때 다시 실행
+watchEffect(fetchPosts);
+// fetchPosts();
 // ----------------------------------------------------
 const router = useRouter();
 // const goDetail = id => router.push(`/posts/${id}`);

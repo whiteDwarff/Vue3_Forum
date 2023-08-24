@@ -1,46 +1,46 @@
 {
   "posts": [
     {
-      "id": 0,
-      "title": "오늘은 날씨가 좋았다.",
-      "content": "근데 너무 더워",
-      "createdAt": "2023-08-22"
+      "title": "base data",
+      "contents": "base content",
+      "createdAt": 1692854835319,
+      "id": 11
     },
     {
-      "id": 1,
-      "title": "내일은 회식이다.",
-      "contents": "저녁은 모둠회~",
-      "createdAt": "2023-08-12"
+      "title": "안녕!@",
+      "contents": "반가",
+      "createdAt": 1692862529284,
+      "id": 12
     },
     {
-      "id": 2,
-      "title": "제목3",
-      "contents": "내용3",
-      "createdAt": "2023-05-11"
+      "title": "ads",
+      "contents": "adadad",
+      "createdAt": 1692862728808,
+      "id": 13
     },
     {
-      "id": 3,
-      "title": "제목4",
-      "contents": "내용4",
-      "createdAt": "2023-08-19"
+      "title": "하이",
+      "contents": "안녕하세염뿌",
+      "createdAt": 1692862907184,
+      "id": 14
     },
     {
-      "id": 4,
-      "title": "제목5",
-      "contents": "내용5",
-      "createdAt": "2023-08-19"
+      "title": "안녕하세여",
+      "contents": "반가어여\n",
+      "createdAt": 1692862930752,
+      "id": 16
     },
     {
-      "title": "신영이가 밥을 가져다줬다.",
-      "contents": "침뱉었을듯",
-      "createdAt": 1692702859179,
-      "id": 5
+      "title": "음",
+      "contents": "되냐?gg",
+      "createdAt": 1692863071324,
+      "id": 17
     },
     {
-      "title": "ㅎㅇ",
-      "contents": "ㅂㅇ",
-      "createdAt": 1692703814498,
-      "id": 6
+      "title": "등록일 수정",
+      "contents": "http method인 patch는 전체 데이터 수정이 아닌 일부 데이터 수정 시 사용,\nput은 전체 데이터 변경 시 사용",
+      "createdAt": 1692868053606,
+      "id": 18
     }
   ]
 }

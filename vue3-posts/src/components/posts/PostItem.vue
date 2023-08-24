@@ -18,7 +18,7 @@ defineProps({
 		required: true,
 	},
 	createdAt: {
-		type: [String, Date, Number],
+		type: [Date, String, Number],
 		required: true,
 	},
 });

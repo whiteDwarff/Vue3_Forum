@@ -19,7 +19,7 @@
 				<button class="btn btn-outline-primary" @click="goEdit">Edit</button>
 			</div>
 			<div class="col-auto">
-				<button class="btn btn-outline-danger">Delete</button>
+				<button @click="remove" class="btn btn-outline-danger">Delete</button>
 			</div>
 		</div>
 	</div>
@@ -28,9 +28,9 @@
 <script setup>
 import { useRouter } from 'vue-router';
 import { ref } from 'vue';
-import { getPostsById } from '@/api/posts.js';
+import { getPostsById, deletePost } from '@/api/posts.js';
 const props = defineProps({
-	id: Number,
+	id: [String, Number],
 });
 // ----------------------------------------------------
 // url의 parameter 값을 가져오기 위함.
@@ -39,6 +39,7 @@ const props = defineProps({
 const router = useRouter();
 const post = ref({});
 
+console.log(props.id);
 // ----------------------------------------------------
 // 구조분해할당을 사용하여 데이터 주입
 const setPost = ({ title, contents, createdAt }) => {
@@ -48,13 +49,26 @@ const setPost = ({ title, contents, createdAt }) => {
 };
 // 데이터 호출
 const fetchPost = async () => {
-	const { data } = await getPostsById(props.id);
-	setPost(data);
+	try {
+		const { data } = await getPostsById(props.id);
+		setPost(data);
+	} catch (err) {
+		console.log(err);
+	}
 };
-
 fetchPost();
-
 // ----------------------------------------------------
+// 현재 게시글 삭제
+const remove = async () => {
+	try {
+		if (confirm('삭제하시겠습니까?')) {
+			await deletePost(props.id);
+			router.push({ name: 'PostList' });
+		}
+	} catch (err) {
+		console.log('error');
+	}
+};
 // 목록화면으로 이동
 const goList = () => router.push({ name: 'PostList' });
 // 수정화면으로 이동

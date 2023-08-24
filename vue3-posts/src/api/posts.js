@@ -1,19 +1,19 @@
-import axios from 'axios';
+import { posts } from '.';
 
-function getPosts() {
-	return axios.get('http://localhost:3000/posts');
+function getPosts(params) {
+	return posts.get('/', { params });
 }
 function getPostsById(id) {
-	return axios.get(`http://localhost:3000/posts/${id}`);
+	return posts.get(`${id}`);
 }
 function createePost(data) {
-	return axios.post(`http://localhost:3000/posts`, data);
+	return posts.post(``, data);
 }
 function updatePost(id, data) {
-	return axios.put(`http://localhost:3000/posts${id}`, data);
+	return posts.patch(`${id}`, data);
 }
 function deletePost(id) {
-	return axios.put(`http://localhost:3000/posts${id}`);
+	return posts.delete(`/${id}`);
 }
 
 // find : 배열의 특정값을 찾아 반환, 없는 경우 undefind

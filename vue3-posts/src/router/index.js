@@ -33,8 +33,8 @@ const routes = [
 		name: 'PostDetail',
 		component: () => import('@/views/posts/PostDetailView.vue'),
 		// posts/:id의 id값이 해당 컴포넌트의 props로 전달
-		//props: true,
-		props: route => ({ id: parseInt(route.params.id) }),
+		props: true,
+		// props: route => ({ id: parseInt(route.params.id) }),
 	},
 	{
 		path: '/posts/:id/edit',
