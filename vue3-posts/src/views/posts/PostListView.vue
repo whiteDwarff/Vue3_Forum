@@ -17,6 +17,7 @@
 					:contents="item.contents"
 					:createdAt="item.createdAt"
 					@click="goDetail(item.id)"
+					@modal="openModal(item)"
 				/>
 			</template>
 		</AppGrid>
@@ -27,9 +28,12 @@
 			@page="page => (params._page = page)"
 		/>
 		<hr class="my-5" />
-		<!-- <AppCard>
-			<PostDetailView :id="3" />
-		</AppCard> -->
+		<PostModal
+			v-model="show"
+			:title="modalTitle"
+			:contents="modalContents"
+			:createdAt="modalCreatedAt"
+		/>
 	</div>
 </template>
 
@@ -38,8 +42,7 @@ import PostItem from '@/components/posts/PostItem.vue';
 import AppPagenation from '@/components/AppPagenation.vue';
 import AppGrid from '@/components/AppGrid.vue';
 import PostFilter from '@/components/posts/PostFilter.vue';
-//import PostDetailView from './PostDetailView.vue';
-//import AppCard from '@/components/AppCard.vue';
+import PostModal from '@/components/posts/PostModal.vue';
 import { getPosts } from '@/api/posts.js';
 import { computed, ref, watchEffect } from 'vue';
 import { useRouter } from 'vue-router';
@@ -85,6 +88,18 @@ const goDetail = id => {
 	});
 };
 // ----------------------------------------------------
+const modalTitle = ref('');
+const modalContents = ref('');
+const modalCreatedAt = ref('');
+
+const show = ref(false);
+const openModal = ({ title, contents, createdAt }) => {
+	show.value = true;
+	modalTitle.value = title;
+	modalContents.value = contents;
+	modalCreatedAt.value = createdAt;
+	console.log(show.value);
+};
 </script>
 
 <style lang="scss" scoped></style>

@@ -20,6 +20,7 @@
 				</slot>
 			</template>
 		</PostForm>
+		<AppAlert :items="alerts"></AppAlert>
 	</div>
 </template>
 
@@ -28,6 +29,7 @@ import { useRoute, useRouter } from 'vue-router';
 import { updatePost, getPostsById } from '@/api/posts.js';
 import { ref } from 'vue';
 import PostForm from '@/components/posts/PostForm.vue';
+import AppAlert from '@/components/AppAlert.vue';
 
 const route = useRoute();
 const router = useRouter();
@@ -47,7 +49,7 @@ const fetchPost = async () => {
 		const { data } = await getPostsById(route.params.id);
 		setForm(data);
 	} catch (err) {
-		console.log(err);
+		console.log(err.message);
 	}
 };
 fetchPost();
@@ -56,8 +58,10 @@ fetchPost();
 const update = async () => {
 	try {
 		await updatePost(route.params.id, { ...form.value });
-		router.push({ name: 'PostDetail', params: route.params.id });
+		vAlert('Update Success!', 'success');
+		//router.push({ name: 'PostDetail', params: route.params.id });
 	} catch (err) {
+		vAlert(err.message);
 		console.log(err);
 	}
 };
@@ -67,6 +71,16 @@ const goDetail = () =>
 		name: 'PostDetail',
 		params: route.params.id,
 	});
+
+//  alert
+const alerts = ref([]);
+
+const vAlert = (message, type = 'error') => {
+	alerts.value.push({ message, type });
+	setTimeout(() => {
+		alerts.value.shift();
+	}, 2000);
+};
 </script>
 
 <style lang="scss" scoped></style>
