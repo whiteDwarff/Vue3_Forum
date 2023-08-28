@@ -28,12 +28,14 @@
 			@page="page => (params._page = page)"
 		/>
 		<hr class="my-5" />
-		<PostModal
-			v-model="show"
-			:title="modalTitle"
-			:contents="modalContents"
-			:createdAt="modalCreatedAt"
-		/>
+		<!-- teleport : component를 특정 DOM으로 이동시킬 경우 사용 -->
+		<teleport to="#modal">
+			<PostModal
+				v-model="show"
+				:title="modalTitle"
+				:contents="modalContents"
+				:createdAt="modalCreatedAt"
+		/></teleport>
 	</div>
 </template>
 
