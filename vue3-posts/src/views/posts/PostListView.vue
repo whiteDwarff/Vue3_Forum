@@ -41,8 +41,8 @@
 
 <script setup>
 import PostItem from '@/components/posts/PostItem.vue';
-import AppPagenation from '@/components/AppPagenation.vue';
-import AppGrid from '@/components/AppGrid.vue';
+// import AppPagenation from '@/components/AppPagenation.vue';
+// import AppGrid from '@/components/AppGrid.vue';
 import PostFilter from '@/components/posts/PostFilter.vue';
 import PostModal from '@/components/posts/PostModal.vue';
 import { getPosts } from '@/api/posts.js';
@@ -67,7 +67,6 @@ const pageCount = computed(() =>
 const fetchPosts = async () => {
 	// ({ data: posts.value } = await getPosts());
 	const { data, headers } = await getPosts(params.value);
-	console.dir(data);
 	try {
 		posts.value = data;
 		totalCount.value = headers['x-total-count'];
@@ -100,7 +99,6 @@ const openModal = ({ title, contents, createdAt }) => {
 	modalTitle.value = title;
 	modalContents.value = contents;
 	modalCreatedAt.value = createdAt;
-	console.log(show.value);
 };
 </script>
 

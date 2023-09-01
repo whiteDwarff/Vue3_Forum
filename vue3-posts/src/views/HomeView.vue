@@ -1,17 +1,14 @@
 <script setup>
 import { useRouter } from 'vue-router';
-import AppGrid from '@/components/AppGrid.vue';
-import AppCard from '@/components/AppCard.vue';
-import { ref, inject } from 'vue';
+// import AppGrid from '@/components/AppGrid.vue';
+// import AppCard from '@/components/AppCard.vue';
+import { ref } from 'vue';
 // ------------------------------------------
 // setup() 내에서 router를 이동하는 method 선언
 const router = useRouter();
 const goAboutPage = () => router.push('/about');
 
 const items = ref(['사과', '바나나', '딸기', '키위']);
-
-const person = inject('person');
-console.log(person.name);
 </script>
 <template>
 	<div>
@@ -23,19 +20,16 @@ console.log(person.name);
 		</AppGrid>
 
 		<hr class="my-4" />
-		<h2>{{ $person.name }}</h2>
-		<h2>{{ person.say }}</h2>
-		<button @click="person.say">CLICK PERSON</button>
 	</div>
 </template>
 
 <!-- plugin은 Options API에서 작동됨 (created 이후 )-->
 <script>
-export default {
-	created() {
-		console.log(this.$person.name);
-	},
-};
+// export default {
+// 	created() {
+// 		console.log(this.$person.name);
+// 	},
+// };
 </script>
 
 <style lang="scss" scoped></style>
