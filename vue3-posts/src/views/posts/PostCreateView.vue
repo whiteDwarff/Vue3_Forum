@@ -1,8 +1,9 @@
 <template>
 	<div>
-		<h2>게시글 등록</h2>
+		<h2 @click="visibleForm = !visibleForm">게시글 등록</h2>
 		<hr class="my-4" />
 		<PostForm
+			v-if="visibleForm"
 			v-model:title="form.title"
 			v-model:contents="form.contents"
 			@submit.prevent="save"
@@ -30,12 +31,12 @@ import { ref } from 'vue';
 import PostForm from '@/components/posts/PostForm.vue';
 
 const router = useRouter();
-const goList = () => router.push({ name: 'PostList' });
-
 const form = ref({
 	title: null,
 	contents: null,
 });
+const visibleForm = ref(true);
+const goList = () => router.push({ name: 'PostList' });
 const save = async () => {
 	try {
 		await createePost({
