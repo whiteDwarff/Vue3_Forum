@@ -7,7 +7,7 @@
 				<div class="col-3 text-muded">내용</div>
 				<div class="col-9">{{ contents }}</div>
 				<div class="col-3 text-muded">등록일</div>
-				<div class="col-9">{{ createdAt }}</div>
+				<div class="col-9">{{ createdData }}</div>
 			</div>
 		</template>
 		<template #actions>
@@ -25,7 +25,7 @@
 
 <script setup>
 // import AppModal from '@/components/AppModal.vue';
-import { computed } from 'vue';
+import { computed, inject } from 'vue';
 const props = defineProps({
 	modelValue: Boolean,
 	title: String,
@@ -42,6 +42,10 @@ const show = computed({
 	},
 });
 const closeModal = () => (show.value = false);
+const dayjs = inject('dayjs');
+const createdData = computed(() =>
+	dayjs(props.createdAt).format('YYYY.MM.DD. HH:mm'),
+);
 </script>
 
 <style lang="scss" scoped></style>

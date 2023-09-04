@@ -2,9 +2,9 @@
 	<form>
 		<div class="mb-3">
 			<label for="title" class="form-label">Title</label>
+			<!-- v-color="'red'" -->
 			<input
 				v-focus
-				v-color="'red'"
 				:value="title"
 				@input="$emit('update:title', $event.target.value)"
 				type="text"

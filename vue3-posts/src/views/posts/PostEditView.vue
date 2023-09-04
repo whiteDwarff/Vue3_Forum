@@ -1,5 +1,7 @@
 <template>
-	<div>
+	<AppLoading v-if="loading" />
+	<AppError v-else-if="error || editError" :message="error || editError" />
+	<div v-else>
 		<h2>게시글 수정</h2>
 		<hr class="my-4" />
 		<PostForm
@@ -16,23 +18,41 @@
 					>
 						Cancle
 					</button>
-					<button class="btn btn-primary">Edit</button>
+					<template v-if="editLoading">
+						<!-- loading button  -->
+						<button class="btn btn-primary" :disabled="editLoading">
+							<span
+								class="spinner-border spinner-border-sm"
+								aria-hidden="true"
+							></span>
+							<span class="visually-hidden" role="status">Loading...</span>
+						</button>
+					</template>
+					<button v-else class="btn btn-primary">Edit</button>
 				</slot>
 			</template>
 		</PostForm>
-		<AppAlert :items="alerts"></AppAlert>
 	</div>
 </template>
 
 <script setup>
+import AppLoading from '@/components/app/AppLoading.vue';
+import AppError from '@/components/app/AppError.vue';
 import { useRoute, useRouter } from 'vue-router';
 import { updatePost, getPostsById } from '@/api/posts.js';
 import { ref } from 'vue';
 import PostForm from '@/components/posts/PostForm.vue';
-// import AppAlert from '@/components/AppAlert.vue';
+import useAlert from '@/composables/alert.js';
 
+// ----------------------------------------------------
+const error = ref(null);
+const loading = ref(false);
+const editError = ref(null);
+const editLoading = ref(false);
+// ----------------------------------------------------
 const route = useRoute();
 const router = useRouter();
+const { vAlert, vSuccess } = useAlert();
 
 const form = ref({
 	title: null,
@@ -43,13 +63,16 @@ const setForm = ({ title, contents }) => {
 	form.value.title = title;
 	form.value.contents = contents;
 };
-// 사용자의 게글 조회
+// 사용자의 게시글 조회
 const fetchPost = async () => {
 	try {
+		loading.value = true;
 		const { data } = await getPostsById(route.params.id);
 		setForm(data);
 	} catch (err) {
-		console.log(err.message);
+		error.value = err.message;
+	} finally {
+		loading.value = false;
 	}
 };
 fetchPost();
@@ -57,12 +80,16 @@ fetchPost();
 // 데이터 수정
 const update = async () => {
 	try {
+		editLoading.value = true;
 		await updatePost(route.params.id, { ...form.value });
-		vAlert('Update Success!', 'success');
-		//router.push({ name: 'PostDetail', params: route.params.id });
+		vSuccess('Update Success!');
+		router.push({ name: 'PostDetail', params: route.params.id });
 	} catch (err) {
-		vAlert(err.message);
-		console.log(err);
+		editError.value = err.message;
+		// editError.value = err.message;
+		// vAlert(err.message);
+	} finally {
+		editLoading.value = false;
 	}
 };
 
@@ -71,16 +98,6 @@ const goDetail = () =>
 		name: 'PostDetail',
 		params: route.params.id,
 	});
-
-//  alert
-const alerts = ref([]);
-
-const vAlert = (message, type = 'error') => {
-	alerts.value.push({ message, type });
-	setTimeout(() => {
-		alerts.value.shift();
-	}, 2000);
-};
 </script>
 
 <style lang="scss" scoped></style>

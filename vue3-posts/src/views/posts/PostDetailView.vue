@@ -1,8 +1,12 @@
 <template>
-	<div>
+	<AppLoading v-if="loading" />
+	<AppError v-else-if="error || removeError" :message="error || removeError" />
+	<div v-else>
 		<h2>{{ post.title }}</h2>
 		<p>{{ post.contents }}</p>
-		<p class="text-muted">{{ post.createdAt }}</p>
+		<p class="text-muted">
+			{{ $dayjs(post.createdAt).format('YYYY.MM.DD. HH:mm') }}
+		</p>
 		<hr class="my-4" />
 		<div class="row g-2">
 			<div class="col-auto">
@@ -18,7 +22,18 @@
 			<div class="col-auto">
 				<button class="btn btn-outline-primary" @click="goEdit">Edit</button>
 			</div>
-			<div class="col-auto">
+			<template v-if="removeLoading">
+				<div class="col-auto">
+					<!-- loading button  -->
+					<button class="btn btn-outline-danger" :disabled="removeLoading">
+						<span
+							class="spinner-border spinner-border-sm"
+							aria-hidden="true"
+						></span>
+					</button>
+				</div>
+			</template>
+			<div v-else class="col-auto">
 				<button @click="remove" class="btn btn-outline-danger">Delete</button>
 			</div>
 		</div>
@@ -26,20 +41,30 @@
 </template>
 
 <script setup>
+import AppLoading from '@/components/app/AppLoading.vue';
+import AppError from '@/components/app/AppError.vue';
 import { useRouter } from 'vue-router';
 import { ref } from 'vue';
 import { getPostsById, deletePost } from '@/api/posts.js';
+import useAlert from '@/composables/alert.js';
+
 const props = defineProps({
 	id: [String, Number],
 });
 // ----------------------------------------------------
 // url의 parameter 값을 가져오기 위함.
 //const route = useRoute();
-
+// ----------------------------------------------------
+const error = ref(null);
+const loading = ref(false);
+const removeError = ref(null);
+const removeLoading = ref(false);
+// ----------------------------------------------------
 const router = useRouter();
 const post = ref({});
 
-console.log(props.id);
+const { vAlert, vSuccess } = useAlert();
+
 // ----------------------------------------------------
 // 구조분해할당을 사용하여 데이터 주입
 const setPost = ({ title, contents, createdAt }) => {
@@ -50,10 +75,13 @@ const setPost = ({ title, contents, createdAt }) => {
 // 데이터 호출
 const fetchPost = async () => {
 	try {
+		loading.value = true;
 		const { data } = await getPostsById(props.id);
 		setPost(data);
 	} catch (err) {
-		console.log(err);
+		error.value = err.message;
+	} finally {
+		loading.value = false;
 	}
 };
 fetchPost();
@@ -62,11 +90,16 @@ fetchPost();
 const remove = async () => {
 	try {
 		if (confirm('삭제하시겠습니까?')) {
+			removeLoading.value = true;
 			await deletePost(props.id);
+			vSuccess('Successed Delete');
 			router.push({ name: 'PostList' });
 		}
 	} catch (err) {
-		console.log('error');
+		removeError.value = err.message;
+		// vAlert(err.message);
+	} finally {
+		removeLoading.value = false;
 	}
 };
 // 목록화면으로 이동
