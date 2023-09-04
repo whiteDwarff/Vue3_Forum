@@ -48,15 +48,11 @@ import AppError from '@/components/app/AppError.vue';
 import PostItem from '@/components/posts/PostItem.vue';
 import PostFilter from '@/components/posts/PostFilter.vue';
 import PostModal from '@/components/posts/PostModal.vue';
-import { getPosts } from '@/api/posts.js';
-import { computed, ref, watchEffect } from 'vue';
+import { computed, ref } from 'vue';
 import { useRouter } from 'vue-router';
+import { useAxios } from '@/composables/useAxios';
 
 // ----------------------------------------------------
-const error = ref(null);
-const loading = ref(false);
-// ----------------------------------------------------
-const posts = ref([]);
 const params = ref({
 	_sort: 'createdAt',
 	_order: 'desc',
@@ -65,31 +61,21 @@ const params = ref({
 	title_like: '',
 });
 // paginataion
-const totalCount = ref(0);
+const totalCount = computed(() =>
+	response.value ? response.value.headers['x-total-count'] : null,
+);
 const pageCount = computed(() =>
 	// Math.ceil() : 반올림
 	Math.ceil(totalCount.value / params.value._limit),
 );
-const fetchPosts = async () => {
-	// ({ data: posts.value } = await getPosts());
-	try {
-		loading.value = true;
-		const { data, headers } = await getPosts(params.value);
-		posts.value = data;
-		totalCount.value = headers['x-total-count'];
-	} catch (err) {
-		error.value = err.message;
-		console.log(err.message);
-		// error.value = err;
-	} finally {
-		loading.value = false;
-	}
-};
-// watchEffect : 반응형의 상태가 변경되었을 때 다시 실행
-watchEffect(fetchPosts);
+const {
+	data: posts,
+	error,
+	loading,
+	response,
+} = useAxios('/posts', { method: 'get', params });
 // ----------------------------------------------------
 const router = useRouter();
-// const goDetail = id => router.push(`/posts/${id}`);
 const goDetail = id => {
 	router.push({
 		name: 'PostDetail',

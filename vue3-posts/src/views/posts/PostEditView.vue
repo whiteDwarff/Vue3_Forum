@@ -39,14 +39,13 @@
 import AppLoading from '@/components/app/AppLoading.vue';
 import AppError from '@/components/app/AppError.vue';
 import { useRoute, useRouter } from 'vue-router';
-import { updatePost, getPostsById } from '@/api/posts.js';
+import { updatePost } from '@/api/posts.js';
 import { ref } from 'vue';
 import PostForm from '@/components/posts/PostForm.vue';
 import useAlert from '@/composables/alert.js';
+import { useAxios } from '@/composables/useAxios';
 
 // ----------------------------------------------------
-const error = ref(null);
-const loading = ref(false);
 const editError = ref(null);
 const editLoading = ref(false);
 // ----------------------------------------------------
@@ -54,28 +53,7 @@ const route = useRoute();
 const router = useRouter();
 const { vAlert, vSuccess } = useAlert();
 
-const form = ref({
-	title: null,
-	contents: null,
-});
-
-const setForm = ({ title, contents }) => {
-	form.value.title = title;
-	form.value.contents = contents;
-};
-// 사용자의 게시글 조회
-const fetchPost = async () => {
-	try {
-		loading.value = true;
-		const { data } = await getPostsById(route.params.id);
-		setForm(data);
-	} catch (err) {
-		error.value = err.message;
-	} finally {
-		loading.value = false;
-	}
-};
-fetchPost();
+const { data: form, error, loading } = useAxios(`posts/${route.params.id}`);
 
 // 데이터 수정
 const update = async () => {
@@ -86,8 +64,7 @@ const update = async () => {
 		router.push({ name: 'PostDetail', params: route.params.id });
 	} catch (err) {
 		editError.value = err.message;
-		// editError.value = err.message;
-		// vAlert(err.message);
+		vAlert(err.message);
 	} finally {
 		editLoading.value = false;
 	}

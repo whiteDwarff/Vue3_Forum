@@ -9,12 +9,12 @@
 		</p>
 		<hr class="my-4" />
 		<div class="row g-2">
-			<div class="col-auto">
+			<!-- <div class="col-auto">
 				<button class="btn btn-outline-dark">Prev</button>
 			</div>
 			<div class="col-auto">
 				<button class="btn btn-outline-dark">Next</button>
-			</div>
+			</div> -->
 			<div class="col-auto me-auto"></div>
 			<div class="col-auto">
 				<button class="btn btn-outline-dark" @click="goList">List</button>
@@ -43,48 +43,22 @@
 <script setup>
 import AppLoading from '@/components/app/AppLoading.vue';
 import AppError from '@/components/app/AppError.vue';
+import useAlert from '@/composables/alert.js';
 import { useRouter } from 'vue-router';
 import { ref } from 'vue';
-import { getPostsById, deletePost } from '@/api/posts.js';
-import useAlert from '@/composables/alert.js';
+import { deletePost } from '@/api/posts.js';
+import { useAxios } from '@/composables/useAxios';
 
 const props = defineProps({
 	id: [String, Number],
 });
-// ----------------------------------------------------
-// url의 parameter 값을 가져오기 위함.
-//const route = useRoute();
-// ----------------------------------------------------
-const error = ref(null);
-const loading = ref(false);
+const router = useRouter();
 const removeError = ref(null);
 const removeLoading = ref(false);
-// ----------------------------------------------------
-const router = useRouter();
-const post = ref({});
-
 const { vAlert, vSuccess } = useAlert();
 
 // ----------------------------------------------------
-// 구조분해할당을 사용하여 데이터 주입
-const setPost = ({ title, contents, createdAt }) => {
-	post.value.title = title;
-	post.value.contents = contents;
-	post.value.createdAt = createdAt;
-};
-// 데이터 호출
-const fetchPost = async () => {
-	try {
-		loading.value = true;
-		const { data } = await getPostsById(props.id);
-		setPost(data);
-	} catch (err) {
-		error.value = err.message;
-	} finally {
-		loading.value = false;
-	}
-};
-fetchPost();
+const { data: post, error, loading } = useAxios(`posts/${props.id}`);
 // ----------------------------------------------------
 // 현재 게시글 삭제
 const remove = async () => {
@@ -97,11 +71,12 @@ const remove = async () => {
 		}
 	} catch (err) {
 		removeError.value = err.message;
-		// vAlert(err.message);
+		vAlert(err.message);
 	} finally {
 		removeLoading.value = false;
 	}
 };
+// ----------------------------------------------------
 // 목록화면으로 이동
 const goList = () => router.push({ name: 'PostList' });
 // 수정화면으로 이동
@@ -110,6 +85,7 @@ const goEdit = () =>
 		name: 'PostEdit',
 		params: props.id,
 	});
+// ----------------------------------------------------
 /*
 	- ref()로 선언 :
 		객체 할당을 할 수 있음 *

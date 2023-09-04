@@ -39,14 +39,12 @@
 
 <script setup>
 import { useRouter } from 'vue-router';
-import { createePost } from '@/api/posts.js';
 import { ref } from 'vue';
+import { useAxios } from '@/composables/useAxios';
 import PostForm from '@/components/posts/PostForm.vue';
 import AppError from '@/components/app/AppError.vue';
 import useAlert from '@/composables/alert.js';
 
-const loading = ref(false);
-const error = ref(null);
 // ----------------------------------------------------
 const router = useRouter();
 const { vAlert, vSuccess } = useAlert();
@@ -55,23 +53,30 @@ const form = ref({
 	title: null,
 	contents: null,
 });
+// ----------------------------------------------------
 const visibleForm = ref(true);
 const goList = () => router.push({ name: 'PostList' });
+
+// ----------------------------------------------------
+
+const { error, loading, excute } = useAxios(
+	'/posts',
+	{
+		method: 'post',
+	},
+	{
+		immediate: false,
+		onSuccess: () => {
+			router.push({ name: 'PostList' });
+			vSuccess('Successed Post!!');
+		},
+		onError: err => {
+			vAlert(err.message);
+		},
+	},
+);
 const save = async () => {
-	try {
-		loading.value = true;
-		await createePost({
-			...form.value,
-			createdAt: Date.now(),
-		});
-		router.push({ name: 'PostList' });
-		vSuccess('Successed Post!!');
-	} catch (err) {
-		error.value = err.message;
-		// vAlert(err.message);
-	} finally {
-		loading.value = false;
-	}
+	excute({ ...form.value, createdAt: Date.now() });
 };
 </script>
 
