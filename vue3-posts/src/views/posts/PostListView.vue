@@ -20,6 +20,7 @@
 						:createdAt="item.createdAt"
 						@click="goDetail(item.id)"
 						@modal="openModal(item)"
+						@preview="selectPreview(item.id)"
 					/>
 				</template>
 			</AppGrid>
@@ -30,7 +31,15 @@
 			:pageCount="pageCount"
 			@page="page => (params._page = page)"
 		/>
+
 		<hr class="my-5" />
+
+		<template v-if="previewId">
+			<AppCard>
+				<PostDetailView :id="posts[previewId]" />
+			</AppCard>
+		</template>
+
 		<!-- teleport : component를 특정 DOM으로 이동시킬 경우 사용 -->
 		<teleport to="#modal">
 			<PostModal
@@ -48,6 +57,8 @@ import AppError from '@/components/app/AppError.vue';
 import PostItem from '@/components/posts/PostItem.vue';
 import PostFilter from '@/components/posts/PostFilter.vue';
 import PostModal from '@/components/posts/PostModal.vue';
+import AppCard from '@/components/app/AppCard.vue';
+import PostDetailView from '@/views/posts/PostDetailView.vue';
 import { computed, ref } from 'vue';
 import { useRouter } from 'vue-router';
 import { useAxios } from '@/composables/useAxios';
@@ -97,6 +108,8 @@ const openModal = ({ title, contents, createdAt }) => {
 	modalCreatedAt.value = createdAt;
 };
 // ----------------------------------------------------
+const previewId = ref(null);
+const selectPreview = id => (previewId.value = id);
 </script>
 
 <style lang="scss" scoped></style>

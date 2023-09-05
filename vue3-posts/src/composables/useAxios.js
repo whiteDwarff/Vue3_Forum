@@ -42,7 +42,7 @@ export const useAxios = (url, config = {}, options = {}) => {
 		error.value = null;
 		loading.value = true;
 
-		axios(url, {
+		axios(unref(url), {
 			// 기본 설정
 			...defaultConfig,
 			// 사용자 설정, config의 값이 있다면 defaultConfig의 값은 무시
@@ -65,7 +65,7 @@ export const useAxios = (url, config = {}, options = {}) => {
 				loading.value = false;
 			});
 	};
-	if (isRef(params)) {
+	if (isRef(params) || isRef(url)) {
 		watchEffect(excute);
 	} else {
 		if (immediate) excute();

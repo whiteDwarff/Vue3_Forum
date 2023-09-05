@@ -5,8 +5,11 @@
 		<p class="text-muted">{{ createdData }}</p>
 		<template #footer>
 			<div class="d-flex flex-row-reverse">
-				<button @click.stop="$emit('modal')" class="btn p-0">
+				<button @click.stop="$emit('modal')" class="btn p-1">
 					<i class="fa-solid fa-star"></i>
+				</button>
+				<button @click.stop="$emit('preview')" class="btn p-1">
+					<i class="fa-solid fa-magnifying-glass"></i>
 				</button>
 			</div>
 		</template>
@@ -31,7 +34,8 @@ const props = defineProps({
 		required: true,
 	},
 });
-defineEmits(['modal']);
+// emit으로 부모 컴포넌트에 보낼 이벤트 정의
+defineEmits(['modal', 'preview']);
 
 const dayjs = inject('dayjs');
 const createdData = computed(() =>
