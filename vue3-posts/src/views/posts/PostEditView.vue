@@ -39,42 +39,53 @@
 import AppLoading from '@/components/app/AppLoading.vue';
 import AppError from '@/components/app/AppError.vue';
 import { useRoute, useRouter } from 'vue-router';
-import { updatePost } from '@/api/posts.js';
-import { ref } from 'vue';
 import PostForm from '@/components/posts/PostForm.vue';
 import useAlert from '@/composables/alert.js';
 import { useAxios } from '@/composables/useAxios';
 
 // ----------------------------------------------------
-const editError = ref(null);
-const editLoading = ref(false);
-// ----------------------------------------------------
 const route = useRoute();
 const router = useRouter();
+const id = route.params.id;
 const { vAlert, vSuccess } = useAlert();
 
-const { data: form, error, loading } = useAxios(`posts/${route.params.id}`);
-
-// 데이터 수정
-const update = async () => {
-	try {
-		editLoading.value = true;
-		await updatePost(route.params.id, { ...form.value });
-		vSuccess('Update Success!');
-		router.push({ name: 'PostDetail', params: route.params.id });
-	} catch (err) {
-		editError.value = err.message;
-		vAlert(err.message);
-	} finally {
-		editLoading.value = false;
-	}
+// ----------------------------------------------------
+// component에 진입 시 데이터를 불러오는 로직
+const { data: form, error, loading } = useAxios(`posts/${id}`);
+// ----------------------------------------------------
+const {
+	error: editError,
+	loading: editLoading,
+	excute,
+} = useAxios(
+	// axios의 url
+	`posts/${id}`,
+	// axios의 config, method 요청
+	{ method: 'patch' },
+	{
+		immediate: false,
+		onSuccess: () => {
+			vSuccess('Successed Update!!');
+			router.push({ name: 'PostDetail', params: { id } });
+		},
+		onError: err => {
+			vAlert(err.message);
+		},
+	},
+);
+// ----------------------------------------------------
+// excute : useAxios에서 할당받은 method
+// submit event를 처리하기 위함. (비동기)
+const update = () => {
+	excute({
+		...form.value,
+	});
+	// router.push({ name: 'PostDetail', params: { id } });
 };
-
+// ----------------------------------------------------
 const goDetail = () =>
 	router.push({
 		name: 'PostDetail',
-		params: route.params.id,
+		params: id,
 	});
 </script>
-
-<style lang="scss" scoped></style>

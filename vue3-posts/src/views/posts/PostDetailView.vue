@@ -45,36 +45,36 @@ import AppLoading from '@/components/app/AppLoading.vue';
 import AppError from '@/components/app/AppError.vue';
 import useAlert from '@/composables/alert.js';
 import { useRouter } from 'vue-router';
-import { ref } from 'vue';
-import { deletePost } from '@/api/posts.js';
 import { useAxios } from '@/composables/useAxios';
 
 const props = defineProps({
 	id: [String, Number],
 });
 const router = useRouter();
-const removeError = ref(null);
-const removeLoading = ref(false);
 const { vAlert, vSuccess } = useAlert();
 
 // ----------------------------------------------------
 const { data: post, error, loading } = useAxios(`posts/${props.id}`);
 // ----------------------------------------------------
-// 현재 게시글 삭제
-const remove = async () => {
-	try {
-		if (confirm('삭제하시겠습니까?')) {
-			removeLoading.value = true;
-			await deletePost(props.id);
+const {
+	error: removeError,
+	loading: removeLoading,
+	excute,
+} = useAxios(
+	`/posts/${props.id}`,
+	{ method: 'delete' },
+	{
+		immediate: false,
+		onSuccess: () => {
 			vSuccess('Successed Delete');
 			router.push({ name: 'PostList' });
-		}
-	} catch (err) {
-		removeError.value = err.message;
-		vAlert(err.message);
-	} finally {
-		removeLoading.value = false;
-	}
+		},
+		onError: err => vAlert(err.message),
+	},
+);
+// 현재 게시글 삭제
+const remove = async () => {
+	if (confirm('삭제하시겠습니까?')) excute();
 };
 // ----------------------------------------------------
 // 목록화면으로 이동
