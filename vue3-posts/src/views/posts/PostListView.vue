@@ -36,7 +36,7 @@
 
 		<template v-if="previewId">
 			<AppCard>
-				<PostDetailView :id="posts[previewId]" />
+				<PostDetailView :id="previewId" />
 			</AppCard>
 		</template>
 

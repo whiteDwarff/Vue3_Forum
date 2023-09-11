@@ -3,6 +3,7 @@
 	<AppError v-else-if="error || removeError" :message="error || removeError" />
 	<div v-else>
 		<h2>{{ post.title }}</h2>
+		<p>{{ props.id }}, isOdd: {{ isOdd }}</p>
 		<p>{{ post.contents }}</p>
 		<p class="text-muted">
 			{{ $dayjs(post.createdAt).format('YYYY.MM.DD. HH:mm') }}
@@ -46,12 +47,15 @@ import AppError from '@/components/app/AppError.vue';
 import useAlert from '@/composables/alert.js';
 import { useRouter } from 'vue-router';
 import { useAxios } from '@/composables/useAxios';
+import { useNumber } from '@/composables/number.js';
 import { computed } from 'vue';
+import { toRefs } from 'vue';
 const props = defineProps({
 	id: [String, Number],
 });
 const router = useRouter();
 const { vAlert, vSuccess } = useAlert();
+const { id: idRef } = toRefs(props);
 
 // ----------------------------------------------------
 const url = computed(() => `/posts/${props.id}`);
@@ -88,6 +92,7 @@ const goEdit = () =>
 		params: props.id,
 	});
 // ----------------------------------------------------
+const { isOdd } = useNumber(idRef);
 /*
 	- ref()로 선언 :
 		객체 할당을 할 수 있음 *

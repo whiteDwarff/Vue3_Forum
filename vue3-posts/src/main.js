@@ -1,6 +1,7 @@
 import 'bootstrap/dist/js/bootstrap.js';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { createApp } from 'vue';
+import { createPinia } from 'pinia';
 import App from './App.vue';
 import router from '@/router';
 import globalComponents from '@/plugins/global_component.js';
@@ -13,6 +14,7 @@ app.use(globalComponents);
 app.use(globalDirective);
 app.use(router);
 app.use(dayjs);
+app.use(createPinia());
 // directive 등록, key : value
 // app.directive('focus', focus);
 app.mount('#app');
