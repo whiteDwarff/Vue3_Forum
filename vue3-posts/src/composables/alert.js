@@ -1,14 +1,9 @@
-import { ref } from 'vue';
-const alerts = ref([]);
+import { useAlertStore } from '@/store/alert';
+import { storeToRefs } from 'pinia';
 
 export default function useAlert() {
-	const vAlert = (message, type = 'error') => {
-		alerts.value.push({ message, type });
-		setTimeout(() => {
-			alerts.value.shift();
-		}, 2000);
-	};
-	const vSuccess = message => vAlert(message, ' success');
+	const { alerts } = storeToRefs(useAlertStore());
+	const { vAlert, vSuccess } = useAlertStore();
 	// components에서 사용하기 위해 return 필요
 	return {
 		alerts,
